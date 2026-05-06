@@ -531,6 +531,10 @@
       background:linear-gradient(90deg, var(--verde-suave), #fffaf6 48%, var(--rosa-suave));
       border-radius:23px;
       padding:20px 28px;
+      display:grid;
+      grid-template-columns:1fr 132px;
+      gap:18px;
+      align-items:center;
       margin-bottom:22px;
     }
 
@@ -673,6 +677,23 @@
     .avatar svg{
       width:90px;
       height:90px;
+    }
+
+    .header .avatar{
+      width:122px;
+      height:122px;
+      justify-self:end;
+      border-width:4px;
+      box-shadow:0 12px 24px rgba(80,48,68,.18);
+    }
+
+    .header .avatar svg{
+      width:112px;
+      height:112px;
+    }
+
+    .card .who-grid{
+      grid-template-columns:1fr;
     }
 
     .photo-tools{
@@ -1199,16 +1220,16 @@ Mantener un ritmo tranquilo</textarea>
               <p class="subtitle" id="vSubtitulo">Cómo ayudarla a sentirse tranquila y respetada</p>
               <div class="unit-badge" id="vAgrupamiento">Unidad de convivencia pendiente</div>
             </div>
+            <div class="avatar">
+              <img id="avatarFoto" alt="Foto subida">
+              <svg id="avatarSvg" viewBox="0 0 100 100" aria-hidden="true"></svg>
+            </div>
           </header>
 
           <div class="cards">
             <section class="card pink">
               <h2 id="vQuienTitulo">Quién es ella:</h2>
               <div class="who-grid">
-                <div class="avatar">
-                  <img id="avatarFoto" alt="Foto subida">
-                  <svg id="avatarSvg" viewBox="0 0 100 100" aria-hidden="true"></svg>
-                </div>
                 <div class="text-block" id="vQuien"></div>
               </div>
             </section>
