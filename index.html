@@ -530,25 +530,19 @@
       border:2px solid var(--verde-borde);
       background:linear-gradient(90deg, var(--verde-suave), #fffaf6 48%, var(--rosa-suave));
       border-radius:23px;
-      padding:20px 26px;
-      display:grid;
-      grid-template-columns:116px 1fr 56px;
-      gap:18px;
-      align-items:center;
+      padding:20px 28px;
       margin-bottom:22px;
     }
 
-    .brand-logo{
-      width:108px;
-      max-height:76px;
-      display:block;
-      object-fit:contain;
-      mix-blend-mode:multiply;
+    .header-title{
+      display:grid;
+      justify-items:start;
+      gap:6px;
     }
 
     .main-title{
       margin:0;
-      font-size:36px;
+      font-size:38px;
       line-height:1.05;
       letter-spacing:.025em;
       font-weight:950;
@@ -556,7 +550,18 @@
       text-transform:uppercase;
     }
 
-    .main-title span{
+    .person-name{
+      display:block;
+      margin-top:4px;
+      color:var(--rosa-oscuro);
+      font-size:30px;
+      line-height:1.05;
+      font-weight:950;
+      text-transform:uppercase;
+    }
+
+    .main-title span,
+    .person-name{
       color:var(--rosa-oscuro);
     }
 
@@ -580,13 +585,6 @@
       font-weight:900;
       text-transform:uppercase;
       letter-spacing:.03em;
-    }
-
-    .heart{
-      color:var(--rosa-oscuro);
-      font-size:44px;
-      text-align:center;
-      line-height:1;
     }
 
     .cards{
@@ -819,6 +817,14 @@
       break-inside:avoid;
     }
 
+    .footer-heart{
+      color:var(--rosa-oscuro);
+      font-family:"Segoe UI", Arial, sans-serif;
+      font-size:22px;
+      font-weight:950;
+      vertical-align:-1px;
+    }
+
     @media(max-width:1150px){
       .editor-view{grid-template-columns:1fr}
       .editor{position:relative; top:0; max-height:none}
@@ -996,10 +1002,10 @@
         <div class="registry-filters">
           <div class="field">
             <label>Buscar informe</label>
-            <input id="buscarRegistro" placeholder="Buscar por nombre o agrupamiento">
+            <input id="buscarRegistro" placeholder="Buscar por nombre o unidad">
           </div>
           <div class="field">
-            <label>Filtrar agrupamiento</label>
+            <label>Filtrar unidad de convivencia</label>
             <select id="filtroAgrupamiento">
               <option value="">Todos</option>
               <option value="A1 Armonía">A1 Armonía</option>
@@ -1017,7 +1023,7 @@
             <select id="ordenRegistro">
               <option value="updated-desc">Últimos modificados</option>
               <option value="name-asc">Nombre A-Z</option>
-              <option value="group-asc">Agrupamiento</option>
+              <option value="group-asc">Unidad de convivencia</option>
             </select>
           </div>
         </div>
@@ -1067,9 +1073,9 @@
       </div>
 
       <div class="field">
-        <label>Agrupamiento</label>
+        <label>Unidad de convivencia</label>
         <select id="agrupamiento">
-          <option value="">Seleccionar agrupamiento</option>
+          <option value="">Seleccionar unidad de convivencia</option>
           <option value="A1 Armonía">A1 Armonía</option>
           <option value="A2 Alegría">A2 Alegría</option>
           <option value="B1 Jazmín">B1 Jazmín</option>
@@ -1102,11 +1108,6 @@
         <textarea id="quien">Mujer muy organizada y detallista.
 A lo largo de su vida ha cuidado mucho su entorno y sus rutinas.
 Le gusta hacer las cosas con calma y sentirse respetada.</textarea>
-      </div>
-
-      <div class="field">
-        <label>Historia de vida</label>
-        <textarea id="historia">Su historia de vida ayuda a entender qué le importa, qué lugares y personas han sido significativos y cómo desea ser acompañada en la residencia.</textarea>
       </div>
 
       <div class="field">
@@ -1192,17 +1193,12 @@ Mantener un ritmo tranquilo</textarea>
       <article class="sheet">
         <div class="document-inner">
           <header class="header">
-            <div class="leaf-icon">
-              <img class="brand-logo" src="logo-diputacion-jaen.png" alt="Diputación de Jaén">
-            </div>
-
-            <div>
-              <h1 class="main-title">CONOCIENDO A: <span id="vNombre">MARÍA</span></h1>
+            <div class="header-title">
+              <h1 class="main-title">CONOCIENDO A:</h1>
+              <span class="person-name" id="vNombre">MARÍA</span>
               <p class="subtitle" id="vSubtitulo">Cómo ayudarla a sentirse tranquila y respetada</p>
-              <div class="unit-badge" id="vAgrupamiento">Agrupamiento pendiente</div>
+              <div class="unit-badge" id="vAgrupamiento">Unidad de convivencia pendiente</div>
             </div>
-
-            <div class="heart">♡</div>
           </header>
 
           <div class="cards">
@@ -1234,14 +1230,6 @@ Mantener un ritmo tranquilo</textarea>
           </div>
 
           <div class="wide-sections">
-            <section class="wide-card blue">
-              <div class="circle green-c">♥</div>
-              <div>
-                <h2>Historia de vida</h2>
-                <p id="vHistoria"></p>
-              </div>
-            </section>
-
             <section class="wide-card lila">
               <div class="circle lila-c">💬</div>
               <div>
@@ -1259,7 +1247,11 @@ Mantener un ritmo tranquilo</textarea>
             </section>
           </div>
 
-          <footer class="footer">💕 <span id="vFrase"></span> 💕</footer>
+          <footer class="footer">
+            <span class="footer-heart">♡</span>
+            <span id="vFrase">Pequeños gestos marcan una gran diferencia en su bienestar</span>
+            <span class="footer-heart">♡</span>
+          </footer>
         </div>
       </article>
     </section>
@@ -1271,7 +1263,7 @@ Mantener un ritmo tranquilo</textarea>
     const passwordHash = "34824069195176a81c63c03020dca2e65e797fa7575bfa51617fba81f03905a3";
     const authKey = "residencia_santa_teresa_auth";
     const passwordKey = "residencia_santa_teresa_password_hash";
-    const fields = ["nombre","subtitulo","agrupamiento","quien","historia","bien","incomoda","claves","entender","resultado","frase","avatarTipo","tratamiento"];
+    const fields = ["nombre","subtitulo","agrupamiento","quien","bien","incomoda","claves","entender","resultado","frase","avatarTipo","tratamiento"];
     const storageKey = "ficha_conociendo_color";
     const registryKey = "residencia_santa_teresa_registro";
     const backupKey = "residencia_santa_teresa_ultima_copia";
@@ -1283,6 +1275,7 @@ Mantener un ritmo tranquilo</textarea>
     let customPhotoSrc = "";
     let hasUnsavedChanges = false;
     let currentRecordId = null;
+    const finalPhraseDefault = "Pequeños gestos marcan una gran diferencia en su bienestar";
     const subtitleDefaults = {
       ella: "Cómo ayudarla a sentirse tranquila y respetada",
       el: "Cómo ayudarlo a sentirse tranquilo y respetado",
@@ -1515,7 +1508,7 @@ Mantener un ritmo tranquilo</textarea>
     }
 
     function exportRegistryCsv(){
-      const headers = ["Nombre","Agrupamiento","Tratamiento","Avatar","Tiene foto propia","Subtítulo","Quién es la persona","Historia de vida","Le hace sentir bien","Puede incomodarla","Claves","Para entender","Cuando lo hacemos así","Frase final","Creado","Modificado"];
+      const headers = ["Nombre","Unidad de convivencia","Tratamiento","Avatar","Tiene foto propia","Subtítulo","Quién es la persona","Le hace sentir bien","Puede incomodarla","Claves","Para entender","Cuando lo hacemos así","Frase final","Creado","Modificado"];
       const rows = readRegistry().map(record => {
         const data = record.data || {};
         return [
@@ -1526,7 +1519,6 @@ Mantener un ritmo tranquilo</textarea>
           data.foto ? "Sí" : "No",
           data.subtitulo || "",
           data.quien || "",
-          data.historia || "",
           data.bien || "",
           data.incomoda || "",
           data.claves || "",
@@ -1553,7 +1545,7 @@ Mantener un ritmo tranquilo</textarea>
         return false;
       }
       if(!$("agrupamiento").value){
-        alert("Antes de guardar, selecciona el agrupamiento.");
+        alert("Antes de guardar, selecciona la unidad de convivencia.");
         $("agrupamiento").focus();
         return false;
       }
@@ -1561,7 +1553,8 @@ Mantener un ritmo tranquilo</textarea>
     }
 
     function emptyCurrentForm(){
-      ["nombre","subtitulo","agrupamiento","quien","historia","bien","incomoda","claves","entender","resultado","frase"].forEach(id => $(id).value = "");
+      ["nombre","subtitulo","agrupamiento","quien","bien","incomoda","claves","entender","resultado","frase"].forEach(id => $(id).value = "");
+      $("frase").value = finalPhraseDefault;
       $("avatarTipo").value = "mujer";
       $("tratamiento").value = "ella";
       $("foto").value = "";
@@ -1610,7 +1603,7 @@ Mantener un ritmo tranquilo</textarea>
 
         const meta = document.createElement("div");
         meta.className = "registry-meta";
-        meta.textContent = `${record.agrupamiento || "Sin agrupamiento"} · Modificado: ${formatDate(record.updatedAt)}`;
+        meta.textContent = `${record.agrupamiento || "Sin unidad de convivencia"} · Modificado: ${formatDate(record.updatedAt)}`;
 
         const actions = document.createElement("div");
         actions.className = "registry-actions";
@@ -1697,20 +1690,19 @@ Mantener un ritmo tranquilo</textarea>
       const textos = tratamientoText();
       $("vNombre").textContent = $("nombre").value || "NOMBRE";
       $("vSubtitulo").textContent = $("subtitulo").value || "";
-      $("vAgrupamiento").textContent = $("agrupamiento").value ? "Agrupamiento: " + $("agrupamiento").value : "Agrupamiento pendiente";
+      $("vAgrupamiento").textContent = $("agrupamiento").value ? "Unidad de convivencia: " + $("agrupamiento").value : "Unidad de convivencia pendiente";
       $("quienLabel").textContent = textos.quienLabel;
       $("vQuienTitulo").textContent = textos.quien;
       $("vEntenderTitulo").textContent = textos.entender;
       $("vClavesTitulo").textContent = textos.claves;
       $("vResultadoTitulo").textContent = textos.resultado;
       $("vQuien").textContent = $("quien").value || "";
-      $("vHistoria").textContent = $("historia").value || "";
       renderList("vBien", $("bien").value, "check", "✓");
       renderList("vIncomoda", $("incomoda").value, "warn", "⚠");
       renderList("vClaves", $("claves").value, "key", "🔑");
       $("vEntender").textContent = $("entender").value || "";
       $("vResultado").textContent = $("resultado").value || "";
-      $("vFrase").textContent = $("frase").value || "";
+      $("vFrase").textContent = $("frase").value || finalPhraseDefault;
 
       const tipo = $("avatarTipo").value;
       const img = $("avatarFoto");

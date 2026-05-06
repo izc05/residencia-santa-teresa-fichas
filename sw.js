@@ -1,4 +1,4 @@
-const CACHE_NAME = "residencia-santa-teresa-v15";
+const CACHE_NAME = "residencia-santa-teresa-v17";
 const ASSETS = [
   "./",
   "./index.html",
