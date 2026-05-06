@@ -410,6 +410,57 @@
       color:var(--amarillo);
     }
 
+    .page-meter{
+      margin:12px 0 0;
+      padding:10px;
+      border:1px solid var(--verde-borde);
+      border-radius:14px;
+      background:#fbfff9;
+    }
+
+    .page-meter-label{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      color:#566055;
+      font-size:12px;
+      font-weight:900;
+      margin-bottom:7px;
+    }
+
+    .page-meter-track{
+      height:10px;
+      border-radius:999px;
+      background:#e9e1d8;
+      overflow:hidden;
+    }
+
+    .page-meter-fill{
+      width:0%;
+      height:100%;
+      background:var(--verde);
+      border-radius:999px;
+      transition:width .2s ease, background .2s ease;
+    }
+
+    .page-meter.warning{
+      background:#fffaf0;
+      border-color:var(--amarillo-borde);
+    }
+
+    .page-meter.warning .page-meter-fill{
+      background:var(--amarillo);
+    }
+
+    .page-meter.danger{
+      background:#fff3ef;
+      border-color:#efc6bd;
+    }
+
+    .page-meter.danger .page-meter-fill{
+      background:#a44237;
+    }
+
     .backup-note{
       margin-top:10px;
       color:#756f68;
@@ -529,13 +580,13 @@
     .header{
       border:2px solid var(--verde-borde);
       background:linear-gradient(90deg, var(--verde-suave), #fffaf6 48%, var(--rosa-suave));
-      border-radius:23px;
-      padding:20px 28px;
+      border-radius:20px;
+      padding:14px 22px;
       display:grid;
-      grid-template-columns:1fr 132px;
-      gap:18px;
+      grid-template-columns:1fr 108px;
+      gap:14px;
       align-items:center;
-      margin-bottom:22px;
+      margin-bottom:16px;
     }
 
     .header-title{
@@ -546,7 +597,7 @@
 
     .main-title{
       margin:0;
-      font-size:38px;
+      font-size:34px;
       line-height:1.05;
       letter-spacing:.025em;
       font-weight:950;
@@ -558,7 +609,7 @@
       display:block;
       margin-top:4px;
       color:var(--rosa-oscuro);
-      font-size:30px;
+      font-size:26px;
       line-height:1.05;
       font-weight:950;
       text-transform:uppercase;
@@ -573,14 +624,14 @@
       margin:8px 0 0;
       color:#514d49;
       font-family:"Segoe Print","Comic Sans MS",cursive;
-      font-size:19px;
+      font-size:17px;
       font-weight:600;
     }
 
     .unit-badge{
       display:inline-block;
       margin-top:10px;
-      padding:6px 11px;
+      padding:5px 10px;
       border-radius:12px;
       border:1px solid var(--verde-borde);
       background:rgba(255,255,255,.78);
@@ -594,21 +645,21 @@
     .cards{
       display:grid;
       grid-template-columns:1fr 1fr;
-      gap:16px;
+      gap:14px;
     }
 
     .card{
       border:2px solid;
-      border-radius:22px;
-      padding:18px 20px;
-      min-height:194px;
+      border-radius:18px;
+      padding:14px 16px;
+      min-height:170px;
       page-break-inside:avoid;
       break-inside:avoid;
     }
 
     .card h2{
       margin:0 0 14px;
-      font-size:19px;
+      font-size:18px;
       line-height:1.2;
       font-weight:950;
       text-transform:uppercase;
@@ -680,16 +731,16 @@
     }
 
     .header .avatar{
-      width:122px;
-      height:122px;
+      width:98px;
+      height:98px;
       justify-self:end;
       border-width:4px;
       box-shadow:0 12px 24px rgba(80,48,68,.18);
     }
 
     .header .avatar svg{
-      width:112px;
-      height:112px;
+      width:90px;
+      height:90px;
     }
 
     .card .who-grid{
@@ -779,13 +830,13 @@
     .wide-sections{
       margin-top:16px;
       display:grid;
-      gap:16px;
+      gap:14px;
     }
 
     .wide-card{
       border:2px solid;
-      border-radius:22px;
-      padding:17px 20px;
+      border-radius:18px;
+      padding:14px 16px;
       display:grid;
       grid-template-columns:62px 1fr;
       gap:16px;
@@ -810,7 +861,7 @@
 
     .wide-card h2{
       margin:0 0 5px;
-      font-size:20px;
+      font-size:18px;
       font-weight:950;
       text-transform:uppercase;
       letter-spacing:.03em;
@@ -818,21 +869,21 @@
 
     .wide-card p{
       margin:0;
-      font-size:15px;
+      font-size:14px;
       line-height:1.42;
       white-space:pre-wrap;
     }
 
     .footer{
-      margin-top:18px;
+      margin-top:14px;
       border:2px solid var(--rosa-borde);
       background:linear-gradient(90deg,var(--amarillo-suave),var(--rosa-suave));
-      border-radius:18px;
-      padding:12px 18px;
+      border-radius:16px;
+      padding:10px 16px;
       text-align:center;
       color:#6d5350;
       font-family:"Segoe Print","Comic Sans MS",cursive;
-      font-size:18px;
+      font-size:16px;
       font-weight:700;
       page-break-inside:avoid;
       break-inside:avoid;
@@ -1065,6 +1116,15 @@
       <h1>Residencia Santa Teresa</h1>
       <p>Edita los campos y genera una ficha en PDF con los colores preparados para impresión.</p>
       <span class="save-status" id="saveStatus">Guardado</span>
+      <div class="page-meter" id="pageMeter">
+        <div class="page-meter-label">
+          <span id="pageMeterText">Espacio A4 disponible</span>
+          <span id="pageMeterPercent">0%</span>
+        </div>
+        <div class="page-meter-track">
+          <div class="page-meter-fill" id="pageMeterFill"></div>
+        </div>
+      </div>
 
       <div class="group-title">Datos principales</div>
 
@@ -1447,6 +1507,29 @@ Mantener un ritmo tranquilo</textarea>
       el.classList.toggle("unsaved", hasUnsavedChanges || !currentRecordId);
     }
 
+    function updatePageMeter(){
+      const inner = document.querySelector(".document-inner");
+      if(!inner) return;
+      const maxHeight = 1123;
+      const used = inner.scrollHeight + 60;
+      const percent = Math.max(0, Math.round((used / maxHeight) * 100));
+      const shown = Math.min(percent, 130);
+      $("pageMeterFill").style.width = Math.min(shown, 100) + "%";
+      $("pageMeterPercent").textContent = percent + "%";
+
+      const meter = $("pageMeter");
+      meter.classList.remove("warning", "danger");
+      if(percent > 100){
+        meter.classList.add("danger");
+        $("pageMeterText").textContent = "Se pasa de una hoja A4";
+      }else if(percent > 88){
+        meter.classList.add("warning");
+        $("pageMeterText").textContent = "Queda poco espacio en la hoja";
+      }else{
+        $("pageMeterText").textContent = "Espacio A4 disponible";
+      }
+    }
+
     function updateBackupInfo(){
       const value = localStorage.getItem(backupKey);
       $("backupInfo").textContent = value ? "Última copia de seguridad: " + formatDate(value) : "Última copia de seguridad: nunca";
@@ -1741,6 +1824,7 @@ Mantener un ritmo tranquilo</textarea>
         svg.style.display = "block";
         svg.innerHTML = avatar(tipo);
       }
+      requestAnimationFrame(updatePageMeter);
     }
 
     function markUnsaved(){
