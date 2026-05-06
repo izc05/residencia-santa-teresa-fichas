@@ -1,0 +1,1944 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Residencia Santa Teresa</title>
+  <meta name="theme-color" content="#1f6f2b" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="logo-diputacion-jaen.png" />
+
+  <style>
+    :root{
+      --papel:#fffdf8;
+      --tinta:#2e2e34;
+
+      /* COLORES PRINCIPALES MANTENIDOS */
+      --verde-suave:#eaf6e8;
+      --verde-borde:#cce7c9;
+      --verde:#3b9145;
+      --verde-oscuro:#1f6f2b;
+
+      --rosa-suave:#fae8ef;
+      --rosa-borde:#f0c9d5;
+      --rosa:#a83e62;
+      --rosa-oscuro:#7c2b48;
+
+      --amarillo-suave:#fff1cf;
+      --amarillo-borde:#f2d899;
+      --amarillo:#b16813;
+
+      --azul-suave:#e9f4ff;
+      --azul-borde:#bdddf4;
+      --azul:#287eb6;
+
+      --lila-suave:#efe5fb;
+      --lila-borde:#d8c0f0;
+      --lila:#6c3fa3;
+
+      --gris-borde:#ded8d0;
+      --sombra:0 16px 35px rgba(75,62,45,.16);
+      --radio:22px;
+    }
+
+    *{box-sizing:border-box}
+
+    html, body{
+      margin:0;
+      min-height:100%;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color:var(--tinta);
+      background:
+        radial-gradient(circle at 0% 0%, rgba(250,232,239,.95) 0 26%, transparent 42%),
+        radial-gradient(circle at 100% 100%, rgba(234,246,232,.95) 0 25%, transparent 40%),
+        #f4efe7;
+    }
+
+    .app{
+      min-height:100vh;
+      display:block;
+      padding:22px;
+    }
+
+    .editor-view{
+      display:grid;
+      grid-template-columns:minmax(520px, 34vw) 1fr;
+      gap:24px;
+      align-items:start;
+    }
+
+    body.view-registry .editor-view,
+    body.view-editor .registry-view{
+      display:none;
+    }
+
+    .registry-view{
+      width:min(1180px, 100%);
+      margin:0 auto;
+      background:rgba(255,255,255,.94);
+      border:1px solid rgba(255,255,255,.96);
+      border-radius:26px;
+      box-shadow:var(--sombra);
+      padding:24px;
+    }
+
+    .view-header{
+      display:flex;
+      justify-content:space-between;
+      gap:18px;
+      align-items:center;
+      margin-bottom:18px;
+    }
+
+    .view-title h1{
+      margin:0;
+      color:var(--verde-oscuro);
+      font-size:30px;
+    }
+
+    .view-title p{
+      margin:6px 0 0;
+      color:#625b56;
+      font-size:14px;
+    }
+
+    .view-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:flex-end;
+    }
+
+    .editor{
+      background:rgba(255,255,255,.92);
+      border:1px solid rgba(255,255,255,.95);
+      border-radius:26px;
+      box-shadow:var(--sombra);
+      padding:18px;
+      position:sticky;
+      top:18px;
+      max-height:calc(100vh - 36px);
+      overflow:auto;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .editor h1{
+      margin:0;
+      font-size:24px;
+      color:var(--verde-oscuro);
+    }
+
+    .editor p{
+      margin:6px 0 14px;
+      font-size:13px;
+      color:#625b56;
+      line-height:1.35;
+    }
+
+    .group-title{
+      margin:18px 0 8px;
+      padding-top:12px;
+      border-top:1px dashed #d9cec4;
+      color:var(--rosa-oscuro);
+      font-size:13px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.04em;
+    }
+
+    .field{margin:10px 0}
+
+    label{
+      display:block;
+      font-size:12px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.04em;
+      color:#675d57;
+      margin-bottom:5px;
+    }
+
+    input, textarea, select{
+      width:100%;
+      border:1px solid #d8cdc4;
+      background:#fff;
+      border-radius:14px;
+      padding:10px 12px;
+      font:inherit;
+      outline:none;
+    }
+
+    textarea{
+      min-height:72px;
+      resize:vertical;
+    }
+
+    input:focus, textarea:focus, select:focus{
+      border-color:var(--verde);
+      box-shadow:0 0 0 4px rgba(59,145,69,.15);
+    }
+
+    .row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .actions{
+      display:grid;
+      gap:10px;
+      margin-top:16px;
+      position:sticky;
+      bottom:-18px;
+      z-index:3;
+      padding:12px 0 0;
+      background:linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,.96) 18%);
+    }
+
+    .primary-actions,
+    .more-actions{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .primary-actions .wide-button{
+      grid-column:1 / -1;
+    }
+
+    .more-panel{
+      border:1px solid #d8cdc4;
+      border-radius:16px;
+      background:#fff;
+      overflow:hidden;
+    }
+
+    .more-panel summary{
+      cursor:pointer;
+      padding:12px 14px;
+      font-weight:900;
+      color:#4e4642;
+      list-style:none;
+      text-align:center;
+    }
+
+    .more-panel summary::-webkit-details-marker{
+      display:none;
+    }
+
+    .more-panel summary:after{
+      content:" +";
+      color:var(--verde);
+      font-weight:950;
+    }
+
+    .more-panel[open] summary{
+      border-bottom:1px solid #eee4dc;
+    }
+
+    .more-panel[open] summary:after{
+      content:" -";
+    }
+
+    .more-actions{
+      padding:10px;
+    }
+
+    button{
+      border:0;
+      border-radius:15px;
+      padding:12px 10px;
+      font-weight:900;
+      cursor:pointer;
+      font-size:14px;
+    }
+
+    .primary{
+      background:linear-gradient(135deg,var(--verde),var(--verde-oscuro));
+      color:#fff;
+      box-shadow:0 9px 18px rgba(31,111,43,.22);
+    }
+
+    .pdf{
+      background:linear-gradient(135deg,var(--rosa),var(--rosa-oscuro));
+      color:#fff;
+      box-shadow:0 9px 18px rgba(124,43,72,.22);
+    }
+
+    .secondary{
+      background:#fff;
+      border:1px solid #d8cdc4;
+      color:#4e4642;
+    }
+
+    .danger{
+      background:#fff3ef;
+      border:1px solid #efc6bd;
+      color:#a44237;
+    }
+
+    .install{
+      background:#edf7ff;
+      border:1px solid var(--azul-borde);
+      color:#1f6693;
+    }
+
+    .hidden{
+      display:none !important;
+    }
+
+    body.auth-locked .app{
+      display:none;
+    }
+
+    .auth-screen{
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      padding:22px;
+    }
+
+    body:not(.auth-locked) .auth-screen{
+      display:none;
+    }
+
+    .auth-card{
+      width:min(440px, 100%);
+      background:rgba(255,255,255,.95);
+      border:1px solid rgba(255,255,255,.98);
+      border-radius:24px;
+      box-shadow:var(--sombra);
+      padding:24px;
+    }
+
+    .auth-card img{
+      width:120px;
+      display:block;
+      margin:0 auto 16px;
+    }
+
+    .auth-card h1{
+      margin:0;
+      color:var(--verde-oscuro);
+      font-size:26px;
+      text-align:center;
+    }
+
+    .auth-card p{
+      margin:8px 0 18px;
+      color:#625b56;
+      font-size:14px;
+      line-height:1.4;
+      text-align:center;
+    }
+
+    .auth-error{
+      min-height:18px;
+      margin-top:10px;
+      color:#a44237;
+      font-size:13px;
+      font-weight:800;
+      text-align:center;
+    }
+
+    .note{
+      font-size:12px !important;
+      color:#756f68 !important;
+      background:var(--amarillo-suave);
+      border:1px solid var(--amarillo-borde);
+      padding:10px;
+      border-radius:14px;
+      margin-top:12px !important;
+    }
+
+    .registry{
+      margin-top:18px;
+      padding-top:14px;
+      border-top:1px dashed #d9cec4;
+    }
+
+    .registry-view .registry{
+      margin-top:0;
+      padding-top:0;
+      border-top:0;
+    }
+
+    .registry-head{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      margin-bottom:10px;
+    }
+
+    .registry-head h2{
+      margin:0;
+      color:var(--verde-oscuro);
+      font-size:18px;
+    }
+
+    .registry-count{
+      color:#756f68;
+      font-size:12px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .registry-filters{
+      display:grid;
+      grid-template-columns:1fr 220px 220px;
+      gap:10px;
+      align-items:end;
+    }
+
+    .save-status{
+      display:inline-block;
+      margin:10px 0 0;
+      padding:7px 10px;
+      border-radius:12px;
+      background:var(--verde-suave);
+      border:1px solid var(--verde-borde);
+      color:var(--verde-oscuro);
+      font-size:12px;
+      font-weight:900;
+    }
+
+    .save-status.unsaved{
+      background:var(--amarillo-suave);
+      border-color:var(--amarillo-borde);
+      color:var(--amarillo);
+    }
+
+    .backup-note{
+      margin-top:10px;
+      color:#756f68;
+      font-size:12px;
+      font-weight:800;
+    }
+
+    .privacy-note{
+      background:#eef8ef;
+      border:1px solid var(--verde-borde);
+      color:#36543a;
+    }
+
+    .password-panel{
+      grid-column:1 / -1;
+      border-top:1px dashed #ded8d0;
+      padding-top:10px;
+      display:grid;
+      gap:8px;
+    }
+
+    .registry-list{
+      display:grid;
+      gap:8px;
+      max-height:42vh;
+      min-height:170px;
+      overflow:auto;
+      margin-top:10px;
+      padding-right:4px;
+    }
+
+    .registry-view .registry-list{
+      grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
+      align-content:start;
+      max-height:calc(100vh - 275px);
+      min-height:360px;
+    }
+
+    .registry-item{
+      border:1px solid #ded8d0;
+      background:#fff;
+      border-radius:14px;
+      padding:10px;
+    }
+
+    .registry-title{
+      font-weight:900;
+      color:#2e2e34;
+      margin-bottom:3px;
+    }
+
+    .registry-meta{
+      color:#756f68;
+      font-size:12px;
+      line-height:1.35;
+    }
+
+    .registry-actions{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:6px;
+      margin-top:8px;
+    }
+
+    .registry-actions button{
+      padding:8px 6px;
+      border-radius:10px;
+      font-size:12px;
+      box-shadow:none;
+    }
+
+    .preview-area{
+      display:flex;
+      justify-content:center;
+      overflow:auto;
+      padding-bottom:32px;
+    }
+
+    /* DOCUMENTO A4 */
+    .sheet{
+      width:794px;
+      min-height:1123px;
+      background:var(--papel);
+      border:2px solid var(--verde-borde);
+      border-radius:20px;
+      box-shadow:var(--sombra);
+      padding:30px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .sheet:before{
+      content:"";
+      position:absolute;
+      inset:14px;
+      border:2px solid var(--verde-borde);
+      border-radius:24px;
+      pointer-events:none;
+    }
+
+    .sheet:after{
+      content:"";
+      position:absolute;
+      width:210px;
+      height:210px;
+      right:-72px;
+      bottom:-80px;
+      background:radial-gradient(circle, rgba(250,232,239,.9), transparent 67%);
+      pointer-events:none;
+    }
+
+    .document-inner{
+      position:relative;
+      z-index:1;
+    }
+
+    .header{
+      border:2px solid var(--verde-borde);
+      background:linear-gradient(90deg, var(--verde-suave), #fffaf6 48%, var(--rosa-suave));
+      border-radius:23px;
+      padding:20px 26px;
+      display:grid;
+      grid-template-columns:116px 1fr 56px;
+      gap:18px;
+      align-items:center;
+      margin-bottom:22px;
+    }
+
+    .brand-logo{
+      width:108px;
+      max-height:76px;
+      display:block;
+      object-fit:contain;
+      mix-blend-mode:multiply;
+    }
+
+    .main-title{
+      margin:0;
+      font-size:36px;
+      line-height:1.05;
+      letter-spacing:.025em;
+      font-weight:950;
+      color:#2d2d34;
+      text-transform:uppercase;
+    }
+
+    .main-title span{
+      color:var(--rosa-oscuro);
+    }
+
+    .subtitle{
+      margin:8px 0 0;
+      color:#514d49;
+      font-family:"Segoe Print","Comic Sans MS",cursive;
+      font-size:19px;
+      font-weight:600;
+    }
+
+    .unit-badge{
+      display:inline-block;
+      margin-top:10px;
+      padding:6px 11px;
+      border-radius:12px;
+      border:1px solid var(--verde-borde);
+      background:rgba(255,255,255,.78);
+      color:var(--verde-oscuro);
+      font-size:13px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.03em;
+    }
+
+    .heart{
+      color:var(--rosa-oscuro);
+      font-size:44px;
+      text-align:center;
+      line-height:1;
+    }
+
+    .cards{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+    }
+
+    .card{
+      border:2px solid;
+      border-radius:22px;
+      padding:18px 20px;
+      min-height:194px;
+      page-break-inside:avoid;
+      break-inside:avoid;
+    }
+
+    .card h2{
+      margin:0 0 14px;
+      font-size:19px;
+      line-height:1.2;
+      font-weight:950;
+      text-transform:uppercase;
+      letter-spacing:.03em;
+      display:flex;
+      gap:9px;
+      align-items:center;
+    }
+
+    .pink{
+      background:linear-gradient(180deg,#fff8fa,var(--rosa-suave));
+      border-color:var(--rosa-borde);
+    }
+    .pink h2{color:var(--rosa-oscuro)}
+
+    .green{
+      background:linear-gradient(180deg,#fbfff9,var(--verde-suave));
+      border-color:var(--verde-borde);
+    }
+    .green h2{color:var(--verde-oscuro)}
+
+    .yellow{
+      background:linear-gradient(180deg,#fffdfa,var(--amarillo-suave));
+      border-color:var(--amarillo-borde);
+    }
+    .yellow h2{color:var(--amarillo)}
+
+    .blue{
+      background:linear-gradient(180deg,#fbfdff,var(--azul-suave));
+      border-color:var(--azul-borde);
+    }
+    .blue h2{color:var(--azul)}
+
+    .lila{
+      background:linear-gradient(180deg,#fdfbff,var(--lila-suave));
+      border-color:var(--lila-borde);
+    }
+    .lila h2{color:var(--lila)}
+
+    .who-grid{
+      display:grid;
+      grid-template-columns:104px 1fr;
+      gap:14px;
+      align-items:start;
+    }
+
+    .avatar{
+      width:96px;
+      height:96px;
+      border-radius:50%;
+      background:#fff;
+      border:3px solid #fff;
+      box-shadow:0 8px 18px rgba(0,0,0,.12);
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+    }
+
+    .avatar img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:none;
+    }
+
+    .avatar svg{
+      width:90px;
+      height:90px;
+    }
+
+    .photo-tools{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:8px;
+      align-items:center;
+    }
+
+    .mini-button{
+      border:1px solid #d8cdc4;
+      background:#fff;
+      color:#4e4642;
+      border-radius:12px;
+      padding:10px 12px;
+      font-size:12px;
+      box-shadow:none;
+      white-space:nowrap;
+    }
+
+    .photo-hint{
+      margin:6px 0 0;
+      font-size:11.5px;
+      line-height:1.35;
+      color:#756f68;
+    }
+
+    .text-block{
+      font-size:14.8px;
+      line-height:1.43;
+      white-space:pre-wrap;
+    }
+
+    ul{
+      list-style:none;
+      margin:0;
+      padding:0;
+      display:grid;
+      gap:9px;
+    }
+
+    li{
+      display:grid;
+      grid-template-columns:25px 1fr;
+      gap:8px;
+      font-size:14.8px;
+      line-height:1.28;
+      white-space:pre-wrap;
+      align-items:start;
+    }
+
+    .icon{
+      width:22px;
+      height:22px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      font-size:14px;
+      font-weight:950;
+      line-height:1;
+      margin-top:-1px;
+    }
+
+    .icon.check{
+      background:var(--verde);
+      color:white;
+    }
+
+    .icon.warn{
+      color:var(--amarillo);
+      background:#fff7e4;
+      border:1px solid var(--amarillo-borde);
+      border-radius:7px;
+      font-size:17px;
+    }
+
+    .icon.key{
+      background:var(--azul);
+      color:white;
+      font-size:13px;
+    }
+
+    .wide-sections{
+      margin-top:16px;
+      display:grid;
+      gap:16px;
+    }
+
+    .wide-card{
+      border:2px solid;
+      border-radius:22px;
+      padding:17px 20px;
+      display:grid;
+      grid-template-columns:62px 1fr;
+      gap:16px;
+      align-items:center;
+      page-break-inside:avoid;
+      break-inside:avoid;
+    }
+
+    .circle{
+      width:58px;
+      height:58px;
+      border-radius:50%;
+      color:white;
+      display:grid;
+      place-items:center;
+      font-size:29px;
+      box-shadow: inset 0 -6px 10px rgba(0,0,0,.10);
+    }
+
+    .circle.lila-c{background:var(--lila)}
+    .circle.green-c{background:var(--verde)}
+
+    .wide-card h2{
+      margin:0 0 5px;
+      font-size:20px;
+      font-weight:950;
+      text-transform:uppercase;
+      letter-spacing:.03em;
+    }
+
+    .wide-card p{
+      margin:0;
+      font-size:15px;
+      line-height:1.42;
+      white-space:pre-wrap;
+    }
+
+    .footer{
+      margin-top:18px;
+      border:2px solid var(--rosa-borde);
+      background:linear-gradient(90deg,var(--amarillo-suave),var(--rosa-suave));
+      border-radius:18px;
+      padding:12px 18px;
+      text-align:center;
+      color:#6d5350;
+      font-family:"Segoe Print","Comic Sans MS",cursive;
+      font-size:18px;
+      font-weight:700;
+      page-break-inside:avoid;
+      break-inside:avoid;
+    }
+
+    @media(max-width:1150px){
+      .editor-view{grid-template-columns:1fr}
+      .editor{position:relative; top:0; max-height:none}
+      .actions{position:static; padding-top:0; background:none}
+      .preview-area{justify-content:flex-start}
+      .view-header{display:grid}
+      .view-actions{justify-content:stretch}
+      .view-actions button{width:100%}
+      .registry-filters{grid-template-columns:1fr}
+    }
+
+    @media(max-width:680px){
+      .app{padding:10px}
+      .row{grid-template-columns:1fr}
+      .actions{grid-template-columns:1fr}
+      .primary-actions,
+      .more-actions{grid-template-columns:1fr}
+      .registry-actions{grid-template-columns:1fr}
+      .sheet{
+        width:794px;
+        min-width:794px;
+      }
+    }
+
+    /* CLAVE PARA QUE SALGAN LOS COLORES AL IMPRIMIR */
+    @media print{
+      *{
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+      }
+
+      html, body{
+        background:white !important;
+        margin:0 !important;
+        padding:0 !important;
+      }
+
+      .editor{
+        display:none !important;
+      }
+
+      .registry-view{
+        display:none !important;
+      }
+
+      .editor-view{
+        display:block !important;
+      }
+
+      .app{
+        display:block !important;
+        padding:0 !important;
+        margin:0 !important;
+      }
+
+      .preview-area{
+        display:block !important;
+        padding:0 !important;
+        margin:0 !important;
+        overflow:visible !important;
+      }
+
+      .sheet{
+        width:210mm !important;
+        height:auto !important;
+        min-height:297mm !important;
+        margin:0 !important;
+        padding:10mm !important;
+        border-radius:0 !important;
+        box-shadow:none !important;
+        border:2px solid var(--verde-borde) !important;
+        background:var(--papel) !important;
+        overflow:visible !important;
+      }
+
+      .sheet:before{
+        inset:5mm !important;
+        border-color:var(--verde-borde) !important;
+      }
+
+      .sheet:after{
+        display:none !important;
+      }
+
+      .document-inner{
+        break-inside:auto !important;
+      }
+
+      .header{
+        background:linear-gradient(90deg, var(--verde-suave), #fffaf6 48%, var(--rosa-suave)) !important;
+        border-color:var(--verde-borde) !important;
+        break-inside:avoid !important;
+        page-break-inside:avoid !important;
+      }
+
+      .cards,
+      .wide-sections{
+        break-inside:auto !important;
+      }
+
+      .card,
+      .wide-card{
+        min-height:auto !important;
+        break-inside:auto !important;
+        page-break-inside:auto !important;
+      }
+
+      .card h2,
+      .wide-card h2{
+        break-after:avoid !important;
+        page-break-after:avoid !important;
+      }
+
+      li,
+      .footer{
+        break-inside:avoid !important;
+        page-break-inside:avoid !important;
+      }
+
+      .pink{background:linear-gradient(180deg,#fff8fa,var(--rosa-suave)) !important; border-color:var(--rosa-borde) !important}
+      .green{background:linear-gradient(180deg,#fbfff9,var(--verde-suave)) !important; border-color:var(--verde-borde) !important}
+      .yellow{background:linear-gradient(180deg,#fffdfa,var(--amarillo-suave)) !important; border-color:var(--amarillo-borde) !important}
+      .blue{background:linear-gradient(180deg,#fbfdff,var(--azul-suave)) !important; border-color:var(--azul-borde) !important}
+      .lila{background:linear-gradient(180deg,#fdfbff,var(--lila-suave)) !important; border-color:var(--lila-borde) !important}
+
+      .footer{
+        background:linear-gradient(90deg,var(--amarillo-suave),var(--rosa-suave)) !important;
+        border-color:var(--rosa-borde) !important;
+      }
+
+      @page{
+        size:A4 portrait;
+        margin:0;
+      }
+    }
+  </style>
+</head>
+
+<body class="auth-locked view-registry">
+  <section class="auth-screen" aria-label="Acceso protegido">
+    <form class="auth-card" id="authForm">
+      <img src="logo-diputacion-jaen.png" alt="Diputación de Jaén">
+      <h1>Residencia Santa Teresa</h1>
+      <p>Introduce la contraseña para acceder a la ficha editable.</p>
+      <label for="passwordInput">Contraseña</label>
+      <input id="passwordInput" type="password" autocomplete="current-password">
+      <button class="primary" type="submit">Entrar</button>
+      <div class="auth-error" id="authError" role="alert"></div>
+    </form>
+  </section>
+
+  <main class="app">
+    <section class="registry-view" id="registryView">
+      <div class="view-header">
+        <div class="view-title">
+          <h1>Residencia Santa Teresa</h1>
+          <p>Busca informes guardados o crea una ficha nueva.</p>
+        </div>
+        <div class="view-actions">
+          <button class="primary" id="nuevoInformeHome" type="button">Nuevo informe</button>
+          <button class="secondary" id="exportarTodoHome" type="button">Exportar registro</button>
+          <button class="secondary" id="exportarExcelHome" type="button">Descargar Excel</button>
+          <button class="secondary" id="importarHome" type="button">Importar registro</button>
+          <button class="install" id="instalarHome" type="button">Instalar app</button>
+          <button class="danger" id="cerrarSesionHome" type="button">Cerrar sesión</button>
+        </div>
+      </div>
+
+      <section class="registry">
+        <div class="registry-head">
+          <h2>Registro de informes</h2>
+          <span class="registry-count" id="registroContador">0 guardados</span>
+        </div>
+        <div class="registry-filters">
+          <div class="field">
+            <label>Buscar informe</label>
+            <input id="buscarRegistro" placeholder="Buscar por nombre o agrupamiento">
+          </div>
+          <div class="field">
+            <label>Filtrar agrupamiento</label>
+            <select id="filtroAgrupamiento">
+              <option value="">Todos</option>
+              <option value="A1 Armonía">A1 Armonía</option>
+              <option value="A2 Alegría">A2 Alegría</option>
+              <option value="B1 Jazmín">B1 Jazmín</option>
+              <option value="B2 Margarita">B2 Margarita</option>
+              <option value="C1 Girasoles">C1 Girasoles</option>
+              <option value="C2 Arcoiris">C2 Arcoiris</option>
+              <option value="D1 Jabalcuz">D1 Jabalcuz</option>
+              <option value="D2 La Pandera">D2 La Pandera</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Ordenar</label>
+            <select id="ordenRegistro">
+              <option value="updated-desc">Últimos modificados</option>
+              <option value="name-asc">Nombre A-Z</option>
+              <option value="group-asc">Agrupamiento</option>
+            </select>
+          </div>
+        </div>
+        <div class="registry-list" id="registroLista"></div>
+      </section>
+
+      <p class="note">
+        Cada informe se guarda en el registro local de este dispositivo. Para moverlo a otro ordenador o tablet, usa <b>Exportar registro</b> e impórtalo allí.
+      </p>
+      <p class="note privacy-note">
+        Privacidad: los informes se guardan en este navegador/dispositivo. No subas datos reales a repositorios públicos ni compartas copias exportadas sin autorización.
+      </p>
+      <p class="backup-note" id="backupInfo">Última copia de seguridad: nunca</p>
+    </section>
+
+    <section class="editor-view" id="editorView">
+    <aside class="editor">
+      <h1>Residencia Santa Teresa</h1>
+      <p>Edita los campos y genera una ficha en PDF con los colores preparados para impresión.</p>
+      <span class="save-status" id="saveStatus">Guardado</span>
+
+      <div class="group-title">Datos principales</div>
+
+      <div class="row">
+        <div class="field">
+          <label>Nombre</label>
+          <input id="nombre" value="MARÍA">
+        </div>
+        <div class="field">
+          <label>Avatar</label>
+          <select id="avatarTipo">
+            <option value="mujer" selected>Mujer</option>
+            <option value="hombre">Hombre</option>
+            <option value="persona">Persona neutra</option>
+            <option value="foto">Imagen subida</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Tratamiento del texto</label>
+        <select id="tratamiento">
+          <option value="ella" selected>Femenino: ella / ayudarla / cuidarla</option>
+          <option value="el">Masculino: él / ayudarlo / cuidarlo</option>
+          <option value="persona">Neutro: persona / ayudarle / cuidarle</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Agrupamiento</label>
+        <select id="agrupamiento">
+          <option value="">Seleccionar agrupamiento</option>
+          <option value="A1 Armonía">A1 Armonía</option>
+          <option value="A2 Alegría">A2 Alegría</option>
+          <option value="B1 Jazmín">B1 Jazmín</option>
+          <option value="B2 Margarita">B2 Margarita</option>
+          <option value="C1 Girasoles">C1 Girasoles</option>
+          <option value="C2 Arcoiris">C2 Arcoiris</option>
+          <option value="D1 Jabalcuz">D1 Jabalcuz</option>
+          <option value="D2 La Pandera">D2 La Pandera</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Subtítulo</label>
+        <input id="subtitulo" value="Cómo ayudarla a sentirse tranquila y respetada">
+      </div>
+
+      <div class="field">
+        <label>Imagen en "Quién es..."</label>
+        <div class="photo-tools">
+          <input id="foto" type="file" accept="image/*">
+          <button class="mini-button" id="quitarFoto" type="button">Quitar</button>
+        </div>
+        <p class="photo-hint">Al subir una imagen se coloca automáticamente donde está el dibujo de la persona.</p>
+      </div>
+
+      <div class="group-title">Contenido de la ficha</div>
+
+      <div class="field">
+        <label id="quienLabel">Quién es la persona</label>
+        <textarea id="quien">Mujer muy organizada y detallista.
+A lo largo de su vida ha cuidado mucho su entorno y sus rutinas.
+Le gusta hacer las cosas con calma y sentirse respetada.</textarea>
+      </div>
+
+      <div class="field">
+        <label>Historia de vida</label>
+        <textarea id="historia">Su historia de vida ayuda a entender qué le importa, qué lugares y personas han sido significativos y cómo desea ser acompañada en la residencia.</textarea>
+      </div>
+
+      <div class="field">
+        <label>Lo que le hace sentir bien · un punto por línea</label>
+        <textarea id="bien">Que le expliquen con antelación lo que se le va a hacer
+Mantener cierto orden en sus pertenencias
+Sentirse escuchada y tenida en cuenta
+Tener tiempo suficiente, sin prisas
+Un trato cercano y respetuoso</textarea>
+      </div>
+
+      <div class="field">
+        <label>Lo que puede incomodarla · un punto por línea</label>
+        <textarea id="incomoda">Cambios sin avisar o inesperados
+Sensación de prisa o presión
+Que se modifiquen sus cosas sin comentarlo
+No entender qué está pasando en ese momento</textarea>
+      </div>
+
+      <div class="field">
+        <label>Claves para cuidarla mejor · un punto por línea</label>
+        <textarea id="claves">Avisarle siempre antes de actuar (“ahora vamos a…”)
+Darle unos segundos para adaptarse
+Respetar su forma de organizar, siempre que sea posible
+Validar sus preferencias (“sé que le gusta hacerlo así”)
+Mantener un ritmo tranquilo</textarea>
+      </div>
+
+      <div class="field">
+        <label>Para entenderla</label>
+        <textarea id="entender">A veces puede parecer exigente, pero en realidad estas conductas son su forma de sentirse segura y mantener el control en un entorno que no es el suyo.</textarea>
+      </div>
+
+      <div class="field">
+        <label>Cuando lo hacemos así</label>
+        <textarea id="resultado">Está más tranquila, colabora mejor y el cuidado se vuelve más fácil y agradable para todas.</textarea>
+      </div>
+
+      <div class="field">
+        <label>Frase final</label>
+        <input id="frase" value="Pequeños gestos marcan una gran diferencia en su bienestar">
+      </div>
+
+      <div class="actions">
+        <div class="primary-actions">
+          <button class="primary wide-button" id="guardar">Guardar informe</button>
+          <button class="pdf" onclick="window.print()">Generar PDF</button>
+          <button class="secondary" id="volverRegistro">Volver al registro</button>
+        </div>
+
+        <details class="more-panel">
+          <summary>Más opciones</summary>
+          <div class="more-actions">
+            <button class="secondary" id="nuevoInforme">Nuevo informe</button>
+            <button class="secondary" id="exportar">Exportar este informe</button>
+            <button class="secondary" id="exportarTodo">Exportar registro</button>
+            <button class="secondary" id="exportarExcel">Descargar Excel</button>
+            <button class="secondary" id="importar">Importar informe/registro</button>
+            <button class="install" id="instalar" type="button">Instalar app</button>
+            <button class="danger" id="cerrarSesion" type="button">Cerrar sesión</button>
+            <button class="danger" id="limpiar">Vaciar</button>
+            <div class="password-panel">
+              <label for="oldPassword">Cambiar contraseña</label>
+              <input id="oldPassword" type="password" placeholder="Contraseña actual" autocomplete="current-password">
+              <input id="newPassword" type="password" placeholder="Nueva contraseña" autocomplete="new-password">
+              <input id="repeatPassword" type="password" placeholder="Repetir nueva contraseña" autocomplete="new-password">
+              <button class="secondary" id="cambiarPassword" type="button">Guardar nueva contraseña</button>
+            </div>
+          </div>
+        </details>
+      </div>
+      <input class="hidden" id="archivoEditable" type="file" accept="application/json,.json">
+
+      <p class="note">
+        Cada informe se guarda en el registro local de este dispositivo. Para moverlo a otro ordenador o tablet, usa <b>Exportar registro</b> e impórtalo allí.
+      </p>
+      <p class="note privacy-note">
+        Privacidad: la contraseña y los informes son locales de este dispositivo. Para uso con datos reales en internet, se recomienda autenticación privada de servidor.
+      </p>
+    </aside>
+
+    <section class="preview-area">
+      <article class="sheet">
+        <div class="document-inner">
+          <header class="header">
+            <div class="leaf-icon">
+              <img class="brand-logo" src="logo-diputacion-jaen.png" alt="Diputación de Jaén">
+            </div>
+
+            <div>
+              <h1 class="main-title">CONOCIENDO A: <span id="vNombre">MARÍA</span></h1>
+              <p class="subtitle" id="vSubtitulo">Cómo ayudarla a sentirse tranquila y respetada</p>
+              <div class="unit-badge" id="vAgrupamiento">Agrupamiento pendiente</div>
+            </div>
+
+            <div class="heart">♡</div>
+          </header>
+
+          <div class="cards">
+            <section class="card pink">
+              <h2 id="vQuienTitulo">Quién es ella:</h2>
+              <div class="who-grid">
+                <div class="avatar">
+                  <img id="avatarFoto" alt="Foto subida">
+                  <svg id="avatarSvg" viewBox="0 0 100 100" aria-hidden="true"></svg>
+                </div>
+                <div class="text-block" id="vQuien"></div>
+              </div>
+            </section>
+
+            <section class="card green">
+              <h2>💚 Lo que le hace sentir bien</h2>
+              <ul id="vBien"></ul>
+            </section>
+
+            <section class="card yellow">
+              <h2>⚠️ Lo que puede incomodarla</h2>
+              <ul id="vIncomoda"></ul>
+            </section>
+
+            <section class="card blue">
+              <h2 id="vClavesTitulo">🔑 Claves para cuidarla mejor</h2>
+              <ul id="vClaves"></ul>
+            </section>
+          </div>
+
+          <div class="wide-sections">
+            <section class="wide-card blue">
+              <div class="circle green-c">♥</div>
+              <div>
+                <h2>Historia de vida</h2>
+                <p id="vHistoria"></p>
+              </div>
+            </section>
+
+            <section class="wide-card lila">
+              <div class="circle lila-c">💬</div>
+              <div>
+                <h2 id="vEntenderTitulo">Para entenderla</h2>
+                <p id="vEntender"></p>
+              </div>
+            </section>
+
+            <section class="wide-card green">
+              <div class="circle green-c">✿</div>
+              <div>
+                <h2 id="vResultadoTitulo">Cuando lo hacemos así...</h2>
+                <p id="vResultado"></p>
+              </div>
+            </section>
+          </div>
+
+          <footer class="footer">💕 <span id="vFrase"></span> 💕</footer>
+        </div>
+      </article>
+    </section>
+    </section>
+  </main>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const passwordHash = "34824069195176a81c63c03020dca2e65e797fa7575bfa51617fba81f03905a3";
+    const authKey = "residencia_santa_teresa_auth";
+    const passwordKey = "residencia_santa_teresa_password_hash";
+    const fields = ["nombre","subtitulo","agrupamiento","quien","historia","bien","incomoda","claves","entender","resultado","frase","avatarTipo","tratamiento"];
+    const storageKey = "ficha_conociendo_color";
+    const registryKey = "residencia_santa_teresa_registro";
+    const backupKey = "residencia_santa_teresa_ultima_copia";
+    const defaultAvatarImages = {
+      mujer: "avatar-abuelita.png",
+      hombre: "avatar-abuelito.png"
+    };
+    let installPrompt = null;
+    let customPhotoSrc = "";
+    let hasUnsavedChanges = false;
+    let currentRecordId = null;
+    const subtitleDefaults = {
+      ella: "Cómo ayudarla a sentirse tranquila y respetada",
+      el: "Cómo ayudarlo a sentirse tranquilo y respetado",
+      persona: "Cómo ayudarle a sentirse tranquila y respetada"
+    };
+
+    function cleanLines(text){
+      return text.split(/\n+/).map(x => x.trim()).filter(Boolean);
+    }
+
+    async function sha256(text){
+      const buffer = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+      return Array.from(new Uint8Array(buffer)).map(byte => byte.toString(16).padStart(2, "0")).join("");
+    }
+
+    function activePasswordHash(){
+      return localStorage.getItem(passwordKey) || passwordHash;
+    }
+
+    function unlockApp(){
+      document.body.classList.remove("auth-locked");
+      sessionStorage.setItem(authKey, "ok");
+    }
+
+    function logout(){
+      if(hasUnsavedChanges && !confirm("Hay cambios sin guardar. ¿Cerrar sesión igualmente?")) return;
+      sessionStorage.removeItem(authKey);
+      document.body.classList.add("auth-locked");
+      document.body.classList.remove("view-editor");
+      document.body.classList.add("view-registry");
+      $("passwordInput").value = "";
+      $("authError").textContent = "";
+      hasUnsavedChanges = false;
+      updateSaveStatus();
+      window.scrollTo({ top:0, behavior:"smooth" });
+    }
+
+    function showRegistry(){
+      document.body.classList.remove("view-editor");
+      document.body.classList.add("view-registry");
+      renderRegistry();
+      window.scrollTo({ top:0, behavior:"smooth" });
+    }
+
+    function showEditor(){
+      document.body.classList.remove("view-registry");
+      document.body.classList.add("view-editor");
+      window.scrollTo({ top:0, behavior:"smooth" });
+    }
+
+    if(sessionStorage.getItem(authKey) === "ok"){
+      document.body.classList.remove("auth-locked");
+    }
+
+    $("authForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      const hash = await sha256($("passwordInput").value);
+      if(hash === activePasswordHash()){
+        $("passwordInput").value = "";
+        $("authError").textContent = "";
+        unlockApp();
+        return;
+      }
+      $("authError").textContent = "Contraseña incorrecta.";
+      $("passwordInput").select();
+    });
+
+    function renderList(id, text, iconClass, iconText){
+      const el = $(id);
+      el.innerHTML = "";
+      cleanLines(text).forEach(line => {
+        const li = document.createElement("li");
+        const icon = document.createElement("span");
+        icon.className = "icon " + iconClass;
+        icon.textContent = iconText;
+        const span = document.createElement("span");
+        span.textContent = line;
+        li.append(icon, span);
+        el.appendChild(li);
+      });
+    }
+
+    function tratamientoText(){
+      const value = $("tratamiento").value;
+      if(value === "el"){
+        return {
+          quien: "Quién es la persona:",
+          quienLabel: "Quién es la persona",
+          entender: "Para entenderlo",
+          claves: "🔑 Claves para cuidarlo mejor",
+          resultado: "Cuando lo hacemos así..."
+        };
+      }
+      if(value === "persona"){
+        return {
+          quien: "Quién es la persona:",
+          quienLabel: "Quién es la persona",
+          entender: "Para entenderle",
+          claves: "🔑 Claves para cuidarle mejor",
+          resultado: "Cuando lo hacemos así..."
+        };
+      }
+      return {
+        quien: "Quién es la persona:",
+        quienLabel: "Quién es la persona",
+        entender: "Para entenderla",
+        claves: "🔑 Claves para cuidarla mejor",
+        resultado: "Cuando lo hacemos así..."
+      };
+    }
+
+    function applyTreatmentDefaults(){
+      const current = $("subtitulo").value.trim();
+      const defaultValues = Object.values(subtitleDefaults);
+      if(current === "" || defaultValues.includes(current)){
+        $("subtitulo").value = subtitleDefaults[$("tratamiento").value];
+      }
+    }
+
+    function collectData(){
+      const data = { version: 2, app: "ficha_conociendo" };
+      fields.forEach(id => data[id] = $(id).value);
+      data.foto = customPhotoSrc;
+      return data;
+    }
+
+    function readRegistry(){
+      try{
+        const raw = localStorage.getItem(registryKey);
+        if(!raw) return [];
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      }catch(err){
+        return [];
+      }
+    }
+
+    function writeRegistry(records){
+      localStorage.setItem(registryKey, JSON.stringify(records));
+      renderRegistry();
+    }
+
+    function updateSaveStatus(){
+      const el = $("saveStatus");
+      if(!el) return;
+      const label = currentRecordId ? "Informe guardado" : "Informe nuevo sin guardar";
+      el.textContent = hasUnsavedChanges ? "Cambios sin guardar" : label;
+      el.classList.toggle("unsaved", hasUnsavedChanges || !currentRecordId);
+    }
+
+    function updateBackupInfo(){
+      const value = localStorage.getItem(backupKey);
+      $("backupInfo").textContent = value ? "Última copia de seguridad: " + formatDate(value) : "Última copia de seguridad: nunca";
+    }
+
+    function recordTitle(data){
+      return (data.nombre || "Sin nombre").trim() || "Sin nombre";
+    }
+
+    function nowIso(){
+      return new Date().toISOString();
+    }
+
+    function formatDate(iso){
+      if(!iso) return "sin fecha";
+      return new Date(iso).toLocaleString("es-ES", {
+        day:"2-digit",
+        month:"2-digit",
+        year:"numeric",
+        hour:"2-digit",
+        minute:"2-digit"
+      });
+    }
+
+    function createRecord(data, existing){
+      const now = nowIso();
+      return {
+        id: existing?.id || (crypto.randomUUID ? crypto.randomUUID() : "id-" + Date.now()),
+        createdAt: existing?.createdAt || now,
+        updatedAt: now,
+        nombre: recordTitle(data),
+        agrupamiento: data.agrupamiento || "",
+        data
+      };
+    }
+
+    function loadData(data){
+      if(data.avatarTipo === "abuela") data.avatarTipo = "mujer";
+      if(data.avatarTipo === "abuelo") data.avatarTipo = "hombre";
+      fields.forEach(id => {
+        if(data[id] !== undefined) $(id).value = data[id];
+      });
+      $("foto").value = "";
+      customPhotoSrc = data.foto || "";
+      $("avatarFoto").removeAttribute("src");
+      update();
+    }
+
+    function loadRecord(record){
+      currentRecordId = record.id;
+      loadData(record.data);
+      hasUnsavedChanges = false;
+      updateSaveStatus();
+      showEditor();
+    }
+
+    function editableFileName(){
+      const name = ($("nombre").value || "ficha").trim().toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+      return `${name || "ficha"}-editable.json`;
+    }
+
+    function registryFileName(){
+      return `registro-residencia-santa-teresa-${new Date().toISOString().slice(0,10)}.json`;
+    }
+
+    function downloadJson(data, filename){
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
+
+    function csvCell(value){
+      const text = String(value ?? "").replace(/\r?\n/g, " ");
+      return `"${text.replace(/"/g, '""')}"`;
+    }
+
+    function exportRegistryCsv(){
+      const headers = ["Nombre","Agrupamiento","Tratamiento","Avatar","Tiene foto propia","Subtítulo","Quién es la persona","Historia de vida","Le hace sentir bien","Puede incomodarla","Claves","Para entender","Cuando lo hacemos así","Frase final","Creado","Modificado"];
+      const rows = readRegistry().map(record => {
+        const data = record.data || {};
+        return [
+          record.nombre || data.nombre || "",
+          record.agrupamiento || data.agrupamiento || "",
+          data.tratamiento || "",
+          data.avatarTipo || "",
+          data.foto ? "Sí" : "No",
+          data.subtitulo || "",
+          data.quien || "",
+          data.historia || "",
+          data.bien || "",
+          data.incomoda || "",
+          data.claves || "",
+          data.entender || "",
+          data.resultado || "",
+          data.frase || "",
+          formatDate(record.createdAt),
+          formatDate(record.updatedAt)
+        ];
+      });
+      const csv = "\ufeff" + [headers, ...rows].map(row => row.map(csvCell).join(";")).join("\n");
+      const blob = new Blob([csv], { type:"text/csv;charset=utf-8" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `registro-residencia-santa-teresa-${new Date().toISOString().slice(0,10)}.csv`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
+
+    function validateBeforeSave(){
+      if(!$("nombre").value.trim()){
+        alert("Antes de guardar, indica el nombre de la persona.");
+        $("nombre").focus();
+        return false;
+      }
+      if(!$("agrupamiento").value){
+        alert("Antes de guardar, selecciona el agrupamiento.");
+        $("agrupamiento").focus();
+        return false;
+      }
+      return true;
+    }
+
+    function emptyCurrentForm(){
+      ["nombre","subtitulo","agrupamiento","quien","historia","bien","incomoda","claves","entender","resultado","frase"].forEach(id => $(id).value = "");
+      $("avatarTipo").value = "mujer";
+      $("tratamiento").value = "ella";
+      $("foto").value = "";
+      customPhotoSrc = "";
+      $("avatarFoto").removeAttribute("src");
+      currentRecordId = null;
+      update();
+      updateSaveStatus();
+    }
+
+    function renderRegistry(){
+      let records = readRegistry();
+      const order = $("ordenRegistro").value;
+      records = records.sort((a, b) => {
+        if(order === "name-asc") return (a.nombre || "").localeCompare(b.nombre || "", "es");
+        if(order === "group-asc") return (a.agrupamiento || "").localeCompare(b.agrupamiento || "", "es") || (a.nombre || "").localeCompare(b.nombre || "", "es");
+        return (b.updatedAt || "").localeCompare(a.updatedAt || "");
+      });
+      const term = $("buscarRegistro").value.trim().toLowerCase();
+      const group = $("filtroAgrupamiento").value;
+      const filtered = records.filter(record => {
+        const haystack = `${record.nombre || ""} ${record.agrupamiento || ""} ${record.data?.nombre || ""} ${record.data?.agrupamiento || ""}`.toLowerCase();
+        const matchesTerm = !term || haystack.includes(term);
+        const matchesGroup = !group || (record.agrupamiento || record.data?.agrupamiento || "") === group;
+        return matchesTerm && matchesGroup;
+      });
+      $("registroContador").textContent = `${records.length} guardados`;
+      updateBackupInfo();
+      $("registroLista").innerHTML = "";
+
+      if(!filtered.length){
+        const empty = document.createElement("div");
+        empty.className = "registry-meta";
+        empty.textContent = records.length ? "No hay resultados para esa búsqueda." : "Todavía no hay informes guardados.";
+        $("registroLista").appendChild(empty);
+        return;
+      }
+
+      filtered.forEach(record => {
+        const item = document.createElement("div");
+        item.className = "registry-item";
+
+        const title = document.createElement("div");
+        title.className = "registry-title";
+        title.textContent = record.nombre || "Sin nombre";
+
+        const meta = document.createElement("div");
+        meta.className = "registry-meta";
+        meta.textContent = `${record.agrupamiento || "Sin agrupamiento"} · Modificado: ${formatDate(record.updatedAt)}`;
+
+        const actions = document.createElement("div");
+        actions.className = "registry-actions";
+
+        const open = document.createElement("button");
+        open.className = "primary";
+        open.type = "button";
+        open.textContent = "Abrir";
+        open.addEventListener("click", () => {
+          if(hasUnsavedChanges && !confirm("Hay cambios sin guardar. ¿Abrir otro informe igualmente?")) return;
+          loadRecord(record);
+        });
+
+        const duplicate = document.createElement("button");
+        duplicate.className = "secondary";
+        duplicate.type = "button";
+        duplicate.textContent = "Duplicar";
+        duplicate.addEventListener("click", () => {
+          currentRecordId = null;
+          loadData(record.data);
+          $("nombre").value = ($("nombre").value || "Sin nombre") + " copia";
+          hasUnsavedChanges = true;
+          update();
+          showEditor();
+        });
+
+        const remove = document.createElement("button");
+        remove.className = "danger";
+        remove.type = "button";
+        remove.textContent = "Borrar";
+        remove.addEventListener("click", () => {
+          const typed = prompt(`Para borrar el informe de ${record.nombre || "esta persona"}, escribe BORRAR`);
+          if(typed !== "BORRAR") return;
+          writeRegistry(readRegistry().filter(item => item.id !== record.id));
+          if(currentRecordId === record.id) currentRecordId = null;
+        });
+
+        actions.append(open, duplicate, remove);
+        item.append(title, meta, actions);
+        $("registroLista").appendChild(item);
+      });
+    }
+
+    function avatar(tipo){
+      if(tipo === "hombre"){
+        return `
+          <circle cx="50" cy="50" r="45" fill="#fff6ea"/>
+          <circle cx="50" cy="51" r="25" fill="#ffd8bd" stroke="#5a5049" stroke-width="2"/>
+          <path d="M28 45 C30 27 43 20 50 20 C61 20 70 29 72 45 C61 36 39 36 28 45Z" fill="#ded6ce" stroke="#5a5049" stroke-width="2"/>
+          <circle cx="41" cy="52" r="3" fill="#333"/>
+          <circle cx="59" cy="52" r="3" fill="#333"/>
+          <path d="M39 66 Q50 73 61 66" fill="none" stroke="#7c4b3c" stroke-width="3" stroke-linecap="round"/>
+          <path d="M38 60 Q50 66 62 60" fill="#fff" stroke="#5a5049" stroke-width="1.5"/>
+          <path d="M25 95 C29 76 71 76 75 95" fill="#9ed0e7"/>
+        `;
+      }
+
+      if(tipo === "persona"){
+        return `
+          <circle cx="50" cy="50" r="45" fill="#fff6ea"/>
+          <circle cx="50" cy="48" r="25" fill="#ffd8bd" stroke="#5a5049" stroke-width="2"/>
+          <path d="M26 45 C30 23 71 21 74 46 C64 34 42 35 26 45Z" fill="#805c47" stroke="#5a5049" stroke-width="2"/>
+          <circle cx="41" cy="51" r="3" fill="#333"/>
+          <circle cx="59" cy="51" r="3" fill="#333"/>
+          <path d="M40 63 Q50 70 60 63" fill="none" stroke="#7c4b3c" stroke-width="3" stroke-linecap="round"/>
+          <path d="M25 95 C29 76 71 76 75 95" fill="#f2a8ba"/>
+        `;
+      }
+
+      return `
+        <circle cx="50" cy="50" r="45" fill="#fff6ea"/>
+        <circle cx="50" cy="51" r="25" fill="#ffd8bd" stroke="#5a5049" stroke-width="2"/>
+        <path d="M28 46 C30 29 40 20 50 20 C61 20 70 29 72 46 C64 36 57 34 50 34 C42 34 35 36 28 46Z" fill="#ddd4ca" stroke="#5a5049" stroke-width="2"/>
+        <path d="M28 46 C21 49 22 61 30 64" fill="#ddd4ca" stroke="#5a5049" stroke-width="2"/>
+        <path d="M72 46 C79 49 78 61 70 64" fill="#ddd4ca" stroke="#5a5049" stroke-width="2"/>
+        <circle cx="41" cy="53" r="3" fill="#333"/>
+        <circle cx="59" cy="53" r="3" fill="#333"/>
+        <path d="M40 65 Q50 72 60 65" fill="none" stroke="#7c4b3c" stroke-width="3" stroke-linecap="round"/>
+        <path d="M25 95 C29 76 71 76 75 95" fill="#ef9fac"/>
+      `;
+    }
+
+    function update(){
+      const textos = tratamientoText();
+      $("vNombre").textContent = $("nombre").value || "NOMBRE";
+      $("vSubtitulo").textContent = $("subtitulo").value || "";
+      $("vAgrupamiento").textContent = $("agrupamiento").value ? "Agrupamiento: " + $("agrupamiento").value : "Agrupamiento pendiente";
+      $("quienLabel").textContent = textos.quienLabel;
+      $("vQuienTitulo").textContent = textos.quien;
+      $("vEntenderTitulo").textContent = textos.entender;
+      $("vClavesTitulo").textContent = textos.claves;
+      $("vResultadoTitulo").textContent = textos.resultado;
+      $("vQuien").textContent = $("quien").value || "";
+      $("vHistoria").textContent = $("historia").value || "";
+      renderList("vBien", $("bien").value, "check", "✓");
+      renderList("vIncomoda", $("incomoda").value, "warn", "⚠");
+      renderList("vClaves", $("claves").value, "key", "🔑");
+      $("vEntender").textContent = $("entender").value || "";
+      $("vResultado").textContent = $("resultado").value || "";
+      $("vFrase").textContent = $("frase").value || "";
+
+      const tipo = $("avatarTipo").value;
+      const img = $("avatarFoto");
+      const svg = $("avatarSvg");
+      if(defaultAvatarImages[tipo]){
+        img.src = defaultAvatarImages[tipo];
+        img.style.display = "block";
+        svg.style.display = "none";
+      }else if(tipo === "foto" && customPhotoSrc){
+        img.src = customPhotoSrc;
+        img.style.display = "block";
+        svg.style.display = "none";
+      }else{
+        img.style.display = "none";
+        svg.style.display = "block";
+        svg.innerHTML = avatar(tipo);
+      }
+    }
+
+    function markUnsaved(){
+      hasUnsavedChanges = true;
+      updateSaveStatus();
+    }
+
+    fields.forEach(id => $(id).addEventListener("input", () => {
+      markUnsaved();
+      update();
+    }));
+    $("avatarTipo").addEventListener("change", () => {
+      markUnsaved();
+      update();
+    });
+    $("tratamiento").addEventListener("change", () => {
+      markUnsaved();
+      applyTreatmentDefaults();
+      update();
+    });
+
+    $("foto").addEventListener("change", e => {
+      const file = e.target.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        customPhotoSrc = reader.result;
+        $("avatarTipo").value = "foto";
+        markUnsaved();
+        update();
+      };
+      reader.readAsDataURL(file);
+    });
+
+    $("quitarFoto").addEventListener("click", () => {
+      $("foto").value = "";
+      customPhotoSrc = "";
+      if($("avatarTipo").value === "foto") $("avatarTipo").value = "mujer";
+      markUnsaved();
+      update();
+    });
+
+    $("guardar").addEventListener("click", () => {
+      if(!validateBeforeSave()) return;
+      const data = collectData();
+      const records = readRegistry();
+      const existing = records.find(record => record.id === currentRecordId);
+      const saved = createRecord(data, existing);
+      const nextRecords = existing
+        ? records.map(record => record.id === saved.id ? saved : record)
+        : [saved, ...records];
+      currentRecordId = saved.id;
+      writeRegistry(nextRecords);
+      localStorage.setItem(storageKey, JSON.stringify(data));
+      hasUnsavedChanges = false;
+      updateSaveStatus();
+      alert("Informe guardado en el registro.");
+    });
+
+    $("nuevoInforme").addEventListener("click", () => {
+      if(hasUnsavedChanges && !confirm("Hay cambios sin guardar. ¿Crear un informe nuevo igualmente?")) return;
+      emptyCurrentForm();
+      hasUnsavedChanges = false;
+      updateSaveStatus();
+      showEditor();
+    });
+
+    $("nuevoInformeHome").addEventListener("click", () => {
+      if(hasUnsavedChanges && !confirm("Hay cambios sin guardar. ¿Crear un informe nuevo igualmente?")) return;
+      emptyCurrentForm();
+      hasUnsavedChanges = false;
+      updateSaveStatus();
+      showEditor();
+    });
+
+    $("volverRegistro").addEventListener("click", () => {
+      if(hasUnsavedChanges && !confirm("Hay cambios sin guardar. ¿Volver al registro igualmente?")) return;
+      showRegistry();
+    });
+
+    $("exportar").addEventListener("click", () => {
+      downloadJson(collectData(), editableFileName());
+      hasUnsavedChanges = false;
+      updateSaveStatus();
+    });
+
+    $("exportarTodo").addEventListener("click", () => {
+      downloadJson({
+        app: "residencia_santa_teresa",
+        version: 1,
+        exportedAt: nowIso(),
+        records: readRegistry()
+      }, registryFileName());
+      localStorage.setItem(backupKey, nowIso());
+      updateBackupInfo();
+    });
+
+    $("exportarTodoHome").addEventListener("click", () => $("exportarTodo").click());
+
+    $("exportarExcel").addEventListener("click", exportRegistryCsv);
+    $("exportarExcelHome").addEventListener("click", exportRegistryCsv);
+
+    $("importar").addEventListener("click", () => {
+      $("archivoEditable").click();
+    });
+
+    $("importarHome").addEventListener("click", () => $("archivoEditable").click());
+
+    $("archivoEditable").addEventListener("change", e => {
+      const file = e.target.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try{
+          const payload = JSON.parse(reader.result);
+          if(Array.isArray(payload.records)){
+            const existing = readRegistry();
+            const byId = new Map(existing.map(record => [record.id, record]));
+            payload.records.forEach(record => {
+              if(record && record.id && record.data) byId.set(record.id, record);
+            });
+            writeRegistry(Array.from(byId.values()));
+            localStorage.setItem(backupKey, nowIso());
+            updateBackupInfo();
+            alert("Registro importado.");
+            return;
+          }
+
+          loadData(payload);
+          currentRecordId = null;
+          hasUnsavedChanges = false;
+          updateSaveStatus();
+          alert("Informe importado. Pulsa “Guardar informe” para añadirlo al registro.");
+        }catch(err){
+          alert("No se pudo cargar. Selecciona un informe o registro exportado desde esta app.");
+        }
+        e.target.value = "";
+      };
+      reader.readAsText(file);
+    });
+
+    $("limpiar").addEventListener("click", () => {
+      if(!confirm("¿Seguro que quieres vaciar los campos?")) return;
+      emptyCurrentForm();
+      hasUnsavedChanges = false;
+      updateSaveStatus();
+    });
+
+    $("buscarRegistro").addEventListener("input", renderRegistry);
+    $("filtroAgrupamiento").addEventListener("change", renderRegistry);
+    $("ordenRegistro").addEventListener("change", renderRegistry);
+
+    window.addEventListener("beforeunload", event => {
+      if(!hasUnsavedChanges) return;
+      event.preventDefault();
+      event.returnValue = "";
+    });
+
+    window.addEventListener("beforeinstallprompt", e => {
+      e.preventDefault();
+      installPrompt = e;
+      $("instalar").disabled = false;
+    });
+
+    $("instalar").addEventListener("click", async () => {
+      if(installPrompt){
+        installPrompt.prompt();
+        await installPrompt.userChoice;
+        installPrompt = null;
+        return;
+      }
+      alert("Si el botón no abre la instalación, usa el menú del navegador y elige “Instalar app” o “Añadir a pantalla de inicio”.");
+    });
+
+    $("instalarHome").addEventListener("click", () => $("instalar").click());
+
+    $("cerrarSesion").addEventListener("click", logout);
+    $("cerrarSesionHome").addEventListener("click", logout);
+
+    $("cambiarPassword").addEventListener("click", async () => {
+      const oldHash = await sha256($("oldPassword").value);
+      const next = $("newPassword").value;
+      const repeat = $("repeatPassword").value;
+      if(oldHash !== activePasswordHash()){
+        alert("La contraseña actual no es correcta.");
+        $("oldPassword").select();
+        return;
+      }
+      if(next.length < 8){
+        alert("La nueva contraseña debe tener al menos 8 caracteres.");
+        $("newPassword").focus();
+        return;
+      }
+      if(next !== repeat){
+        alert("La nueva contraseña no coincide.");
+        $("repeatPassword").select();
+        return;
+      }
+      localStorage.setItem(passwordKey, await sha256(next));
+      $("oldPassword").value = "";
+      $("newPassword").value = "";
+      $("repeatPassword").value = "";
+      alert("Contraseña cambiada en este dispositivo.");
+    });
+
+    if("serviceWorker" in navigator){
+      navigator.serviceWorker.register("sw.js").catch(() => {});
+    }
+
+    renderRegistry();
+    update();
+  </script>
+</body>
+</html>
